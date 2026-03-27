@@ -63,6 +63,23 @@ const STRINGS = {
 
 let uiLang = "en";
 
+const rawInput = document.getElementById("rawInput");
+const RAW_MIN_H = 56;
+
+function rawInputMaxHeight() {
+  return Math.min(window.innerHeight * 0.38, 200);
+}
+
+function fitRawInput() {
+  const ta = rawInput;
+  if (!ta || !ta.classList.contains("pane-input--fit")) return;
+  const maxH = rawInputMaxHeight();
+  ta.style.height = "auto";
+  const target = Math.min(maxH, Math.max(RAW_MIN_H, ta.scrollHeight));
+  ta.style.height = `${target}px`;
+  ta.style.overflowY = ta.scrollHeight > maxH ? "auto" : "hidden";
+}
+
 function applyI18n() {
   const t = STRINGS[uiLang];
   document.documentElement.lang = uiLang === "uk" ? "uk" : "en";
@@ -79,6 +96,7 @@ function applyI18n() {
 
   const raw = document.getElementById("rawInput");
   if (raw && t.placeholderRaw) raw.placeholder = t.placeholderRaw;
+  requestAnimationFrame(() => fitRawInput());
 }
 
 document.querySelectorAll("[data-lang-ui]").forEach((btn) => {
@@ -92,7 +110,6 @@ document.querySelectorAll("[data-lang-ui]").forEach((btn) => {
   });
 });
 
-const rawInput = document.getElementById("rawInput");
 const translateBtn = document.getElementById("translateBtn");
 const errorMsg = document.getElementById("errorMsg");
 const resultText = document.getElementById("resultText");
@@ -203,6 +220,10 @@ async function translate() {
 
 translateBtn.addEventListener("click", translate);
 
+rawInput.addEventListener("input", () => fitRawInput());
+rawInput.addEventListener("paste", () => requestAnimationFrame(() => fitRawInput()));
+window.addEventListener("resize", () => fitRawInput());
+
 rawInput.addEventListener("keydown", (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
     e.preventDefault();
@@ -231,3 +252,4 @@ copyBtn.addEventListener("click", async () => {
 loadProfile();
 applyI18n();
 syncPreviewLabels();
+requestAnimationFrame(() => fitRawInput());

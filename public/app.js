@@ -16,7 +16,6 @@ const STRINGS = {
       "e.g. I got arrested for fraud, or they towed my car after the NFT drop.",
     placeholderOutput: "Your LinkedIn post will appear here…",
     btnTranslate: "Translate",
-    editOriginal: "Edit original",
     copy: "Copy",
     loading: "Translating…",
     postNow: "now",
@@ -46,7 +45,6 @@ const STRINGS = {
       "напр.: мене взяли за шахрайство, або забрали машину після дропу.",
     placeholderOutput: "Тут з’явиться ваш LinkedIn-допис…",
     btnTranslate: "Перекласти",
-    editOriginal: "Редагувати оригінал",
     copy: "Копіювати",
     loading: "Перекладаємо…",
     postNow: "щойно",
@@ -69,6 +67,10 @@ const rawInput = document.getElementById("rawInput");
 const RAW_MIN_H = 56;
 
 function rawInputMaxHeight() {
+  const compact = translatorCard?.classList.contains("translator--has-result");
+  if (compact) {
+    return Math.min(window.innerHeight * 0.22, 140);
+  }
   return Math.min(window.innerHeight * 0.38, 200);
 }
 
@@ -112,9 +114,7 @@ document.querySelectorAll("[data-lang-ui]").forEach((btn) => {
   });
 });
 
-const appShell = document.getElementById("appShell");
 const translatorCard = document.getElementById("translatorCard");
-const expandOriginalBtn = document.getElementById("expandOriginalBtn");
 
 const translateBtn = document.getElementById("translateBtn");
 const errorMsg = document.getElementById("errorMsg");
@@ -175,16 +175,8 @@ function showError(msg) {
   errorMsg.hidden = !msg;
 }
 
-function enterOutputFocus() {
-  translatorCard?.classList.add("translator--output-focus");
-  appShell?.classList.add("reading-output");
-  if (expandOriginalBtn) expandOriginalBtn.hidden = false;
-}
-
-function exitOutputFocus() {
-  translatorCard?.classList.remove("translator--output-focus");
-  appShell?.classList.remove("reading-output");
-  if (expandOriginalBtn) expandOriginalBtn.hidden = true;
+function setResultSplitLayout(on) {
+  translatorCard?.classList.toggle("translator--has-result", !!on);
   requestAnimationFrame(() => fitRawInput());
 }
 
@@ -196,7 +188,7 @@ async function translate() {
   }
 
   showError("");
-  enterOutputFocus();
+  setResultSplitLayout(true);
   translateBtn.disabled = true;
   copyBtn.disabled = true;
   resultText.hidden = true;
@@ -231,7 +223,7 @@ async function translate() {
     } else {
       resultEmpty.hidden = false;
       resultText.hidden = true;
-      exitOutputFocus();
+      setResultSplitLayout(false);
     }
   } finally {
     targetLoading.hidden = true;
@@ -240,11 +232,6 @@ async function translate() {
 }
 
 translateBtn.addEventListener("click", translate);
-
-expandOriginalBtn?.addEventListener("click", () => {
-  exitOutputFocus();
-  rawInput?.focus();
-});
 
 rawInput.addEventListener("input", () => fitRawInput());
 rawInput.addEventListener("paste", () => requestAnimationFrame(() => fitRawInput()));

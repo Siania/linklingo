@@ -194,31 +194,6 @@ body {
   min-height: 0;
 }
 
-.app-shell.reading-output .main-flow {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.app-shell.reading-output .profile-strip,
-.app-shell.reading-output .news,
-.app-shell.reading-output .footer-mini {
-  display: none !important;
-}
-
-.app-shell.reading-output .feed {
-  padding: 6px 8px 8px;
-  flex: 1;
-  min-height: 0;
-}
-
-.app-shell.reading-output .translator {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
 .card {
   background: var(--li-card);
   border-radius: var(--radius);
@@ -328,49 +303,29 @@ body {
   min-height: 0;
 }
 
-.edit-original-btn {
-  display: block;
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #dbeafe;
-  background: linear-gradient(180deg, #f0f6ff 0%, #e8f2ff 100%);
-  padding: 8px 10px;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--li-blue);
-  cursor: pointer;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.edit-original-btn:active {
-  background: #dbeafe;
+/* After first translate: compact plain-language on top, tall LinkedIn post below */
+.translator--has-result {
+  min-height: min(68vh, 560px);
 }
 
 .translator-pane {
   padding: 10px 12px;
 }
 
+.translator--has-result .translator-pane {
+  padding: 14px 16px;
+}
+
 .translator-pane--from {
   background: linear-gradient(180deg, #fcfdff 0%, #f4f8ff 100%);
   border-bottom: 1px solid #e8f0fa;
   flex-shrink: 0;
-  transition:
-    max-height 0.22s ease,
-    opacity 0.18s ease,
-    padding 0.22s ease;
 }
 
-.translator--output-focus .translator-pane--from {
-  max-height: 0 !important;
-  overflow: hidden;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  margin: 0;
-  opacity: 0;
-  pointer-events: none;
-  border-bottom: none;
+.translator--has-result .translator-pane--from {
+  max-height: min(26vh, 168px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .translator-pane--to {
@@ -383,18 +338,9 @@ body {
   min-height: 0;
 }
 
-.translator--output-focus .translator-pane--to {
+.translator--has-result .translator-pane--to {
   flex: 1;
-  min-height: 0;
-}
-
-.translator--output-focus .translator-bridge {
-  padding: 6px 10px;
-  flex-shrink: 0;
-}
-
-.translator--output-focus .bridge-visual {
-  display: none;
+  min-height: 180px;
 }
 
 .pane-header {
@@ -487,25 +433,34 @@ body {
   flex-shrink: 0;
 }
 
-.bridge-visual {
+.bridge-split {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  color: var(--li-muted);
+  gap: 0;
+  margin-bottom: 10px;
 }
 
 .bridge-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #bfdbfe, transparent);
+  background: linear-gradient(90deg, transparent, #cbd5e1 35%, #cbd5e1 65%, transparent);
 }
 
-.bridge-arrow {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--li-blue);
+.bridge-badge {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0 10px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 12px;
   line-height: 1;
+  color: var(--li-muted);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
 }
 
 .bridge-controls {
@@ -587,7 +542,7 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-.translator--output-focus .pane-output {
+.translator--has-result .pane-output {
   flex: 1;
   min-height: 0;
   max-height: none;

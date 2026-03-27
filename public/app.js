@@ -2,47 +2,49 @@ const STRINGS = {
   en: {
     profileName: "Your Name",
     profileTagline: "Professional storyteller",
-    statViews: "Profile viewers",
-    statImpressions: "Post impressions",
-    composerHint: "Start a post…",
+    statViews: "Views",
+    statImpressions: "Impressions",
+    paneSource: "Plain language",
+    paneSourceHint: "What you really mean",
+    paneTarget: "LinkedIn",
+    paneTargetHint: "Corporate voice",
     labelRaw: "Your real phrase",
     placeholderRaw:
       'e.g. I blew my savings on an NFT drop and they repossessed my car.',
+    placeholderOutput: "Your LinkedIn post will appear here…",
     outputLangLabel: "Post language",
-    btnTranslate: "Translate to LinkedIn",
-    postNow: "now",
-    like: "Like",
+    btnTranslate: "Translate",
     copy: "Copy",
-    loading: "The model is polishing your hustle…",
+    loading: "Translating…",
     newsTitle: "LinkedIn News",
     news1: "Buzzwords up 12% week over week",
     news2: "“Thrilled to share” remains #1 opener",
     news3: "Thought leadership enters flow state",
-    footerNote: "Powered by OpenAI · Not affiliated with LinkedIn",
-    searchPlaceholder: "Search",
+    footerNote: "Powered by AI · Not affiliated with LinkedIn",
     copied: "Copied",
   },
   uk: {
     profileName: "Ваше ім’я",
     profileTagline: "Професійний оповідач",
-    statViews: "Перегляди профілю",
-    statImpressions: "Покази дописів",
-    composerHint: "Розпочніть допис…",
+    statViews: "Перегляди",
+    statImpressions: "Покази",
+    paneSource: "Звичайна мова",
+    paneSourceHint: "Що ви маєте на увазі",
+    paneTarget: "LinkedIn",
+    paneTargetHint: "Корпоративний тон",
     labelRaw: "Ваша справжня фраза",
     placeholderRaw:
       "напр.: Я витратив усі заощадження на дроп і в мене забрали машину.",
+    placeholderOutput: "Тут з’явиться ваш LinkedIn-допис…",
     outputLangLabel: "Мова допису",
-    btnTranslate: "Перекласти на LinkedIn-івську",
-    postNow: "щойно",
-    like: "Подобається",
+    btnTranslate: "Перекласти",
     copy: "Копіювати",
-    loading: "Модель наводить лиск на ваш хастл…",
+    loading: "Перекладаємо…",
     newsTitle: "Новини LinkedIn",
     news1: "Базворди зросли на 12% за тиждень",
     news2: "«Радію поділитися» лідирує в інтро",
     news3: "Таут-лідерство входить у потік",
-    footerNote: "На базі OpenAI · Не пов’язано з LinkedIn",
-    searchPlaceholder: "Пошук",
+    footerNote: "На базі ШІ · Не пов’язано з LinkedIn",
     copied: "Скопійовано",
   },
 };
@@ -61,9 +63,6 @@ function applyI18n() {
 
   const raw = document.getElementById("rawInput");
   if (raw && t.placeholderRaw) raw.placeholder = t.placeholderRaw;
-
-  const search = document.getElementById("demoSearch");
-  if (search && t.searchPlaceholder) search.placeholder = t.searchPlaceholder;
 }
 
 document.querySelectorAll("[data-lang-ui]").forEach((btn) => {
@@ -88,9 +87,9 @@ document.querySelectorAll("[data-lang-out]").forEach((btn) => {
 const rawInput = document.getElementById("rawInput");
 const translateBtn = document.getElementById("translateBtn");
 const errorMsg = document.getElementById("errorMsg");
-const resultCard = document.getElementById("resultCard");
 const resultText = document.getElementById("resultText");
-const loadingCard = document.getElementById("loadingCard");
+const resultEmpty = document.getElementById("resultEmpty");
+const targetLoading = document.getElementById("targetLoading");
 const copyBtn = document.getElementById("copyBtn");
 
 function showError(msg) {
@@ -107,8 +106,10 @@ async function translate() {
 
   showError("");
   translateBtn.disabled = true;
-  resultCard.hidden = true;
-  loadingCard.hidden = false;
+  copyBtn.disabled = true;
+  resultText.hidden = true;
+  resultEmpty.hidden = true;
+  targetLoading.hidden = false;
 
   try {
     const res = await fetch("/api/translate", {
@@ -121,11 +122,21 @@ async function translate() {
       throw new Error(data.error || `HTTP ${res.status}`);
     }
     resultText.textContent = data.result || "";
-    resultCard.hidden = false;
+    resultText.hidden = false;
+    resultEmpty.hidden = true;
+    copyBtn.disabled = false;
   } catch (e) {
     showError(e.message || "Request failed");
+    if (resultText.textContent?.trim()) {
+      resultText.hidden = false;
+      resultEmpty.hidden = true;
+      copyBtn.disabled = false;
+    } else {
+      resultEmpty.hidden = false;
+      resultText.hidden = true;
+    }
   } finally {
-    loadingCard.hidden = true;
+    targetLoading.hidden = true;
     translateBtn.disabled = false;
   }
 }
@@ -137,10 +148,6 @@ rawInput.addEventListener("keydown", (e) => {
     e.preventDefault();
     translate();
   }
-});
-
-document.querySelector(".fake-post-trigger")?.addEventListener("click", () => {
-  rawInput.focus();
 });
 
 copyBtn.addEventListener("click", async () => {

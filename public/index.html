@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Linklingo — LinkedIn voice translator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#" aria-label="Linklingo home">
+          <span class="brand-icon" aria-hidden="true">in</span>
+          <span class="brand-text">Linklingo</span>
+        </a>
+        <div class="search-shell" role="search">
+          <svg class="search-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <input
+            type="search"
+            class="search-input"
+            id="demoSearch"
+            placeholder=""
+            disabled
+            tabindex="-1"
+          />
+        </div>
+        <nav class="top-actions" aria-label="Language">
+          <div class="lang-switch" role="group" aria-label="Interface language">
+            <button type="button" class="lang-btn is-active" data-lang-ui="en">English</button>
+            <button type="button" class="lang-btn" data-lang-ui="uk">Українська</button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar-left">
+        <div class="card profile-mini">
+          <div class="cover"></div>
+          <div class="avatar" aria-hidden="true">You</div>
+          <div class="profile-mini-body">
+            <p class="profile-name" data-i18n="profileName">Your Name</p>
+            <p class="profile-line" data-i18n="profileTagline">Professional storyteller</p>
+          </div>
+        </div>
+        <div class="card stats">
+          <div class="stat-row">
+            <span data-i18n="statViews">Profile viewers</span>
+            <span class="stat-num">—</span>
+          </div>
+          <div class="stat-row">
+            <span data-i18n="statImpressions">Post impressions</span>
+            <span class="stat-num">—</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="feed">
+        <div class="card composer">
+          <div class="composer-head">
+            <div class="avatar sm" aria-hidden="true">You</div>
+            <button type="button" class="fake-post-trigger" data-i18n="composerHint">
+              Start a post…
+            </button>
+          </div>
+          <label class="sr-only" for="rawInput" data-i18n="labelRaw">Your real phrase</label>
+          <textarea
+            id="rawInput"
+            class="composer-input"
+            rows="5"
+            spellcheck="true"
+            data-i18n-placeholder="placeholderRaw"
+            placeholder=""
+          ></textarea>
+          <div class="composer-toolbar">
+            <div class="output-lang">
+              <span class="output-lang-label" data-i18n="outputLangLabel">Post language</span>
+              <div class="lang-switch small" role="group" aria-label="Output language">
+                <button type="button" class="lang-btn out-lang is-active" data-lang-out="en">EN</button>
+                <button type="button" class="lang-btn out-lang" data-lang-out="uk">UA</button>
+              </div>
+            </div>
+            <button type="button" class="btn-primary" id="translateBtn">
+              <span data-i18n="btnTranslate">Translate to LinkedIn</span>
+            </button>
+          </div>
+          <p class="error-msg" id="errorMsg" hidden role="alert"></p>
+        </div>
+
+        <article class="card post" id="resultCard" hidden>
+          <header class="post-head">
+            <div class="avatar sm" aria-hidden="true">You</div>
+            <div class="post-meta">
+              <p class="post-name" data-i18n="profileName">Your Name</p>
+              <p class="post-sub">
+                <span data-i18n="postNow">now</span>
+                ·
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                  />
+                </svg>
+              </p>
+            </div>
+          </header>
+          <div class="post-body" id="resultText"></div>
+          <footer class="post-actions">
+            <button type="button" class="post-action" disabled>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              <span data-i18n="like">Like</span>
+            </button>
+            <button type="button" class="post-action" id="copyBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M8 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2M8 7H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2M8 7h8a2 2 0 0 1 2 2v2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              <span data-i18n="copy">Copy</span>
+            </button>
+          </footer>
+        </article>
+
+        <div class="card skeleton" id="loadingCard" hidden>
+          <div class="sk-line sk-title"></div>
+          <div class="sk-line"></div>
+          <div class="sk-line short"></div>
+          <p class="loading-text" data-i18n="loading">The model is polishing your hustle…</p>
+        </div>
+      </section>
+
+      <aside class="sidebar-right">
+        <div class="card news">
+          <h2 class="news-title" data-i18n="newsTitle">LinkedIn News</h2>
+          <ol class="news-list">
+            <li data-i18n="news1">Buzzwords up 12% week over week</li>
+            <li data-i18n="news2">“Thrilled to share” remains #1 opener</li>
+            <li data-i18n="news3">Thought leadership enters flow state</li>
+          </ol>
+        </div>
+        <footer class="footer-mini">
+          <span data-i18n="footerNote">Powered by OpenAI · Not affiliated with LinkedIn</span>
+        </footer>
+      </aside>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "prepare": "node scripts/setup-hooks.mjs",
+    "prepare": "node scripts/setup-hooks.mjs && node scripts/sync-vercel-analytics.mjs",
     "git:sync": "node scripts/git-sync.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
   },

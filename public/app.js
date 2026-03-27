@@ -1,3 +1,6 @@
+import { inject } from "/vendor/vercel-analytics.mjs";
+inject();
+
 const STRINGS = {
   en: {
     labelProfileName: "Display name",

@@ -758,11 +758,12 @@ body::after {
   opacity: 0.95;
 }
 
-.footer-disclaimer {
+.footer-credit {
   margin: 0;
   max-width: 22rem;
-  font-size: 9px;
-  opacity: 0.92;
+  font-size: 11px;
+  line-height: 1.45;
+  opacity: 0.95;
 }
 
 .sr-only {

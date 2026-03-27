@@ -10,12 +10,13 @@ const STRINGS = {
     paneSource: "Plain language",
     paneSourceHint: "What you really mean",
     paneTarget: "LinkedIn",
-    paneTargetHint: "Corporate voice",
+    paneTargetHint: "LinkedIn post",
     labelRaw: "Your real phrase",
     placeholderRaw:
       "e.g. I got arrested for fraud, or they towed my car after the NFT drop.",
     placeholderOutput: "Your LinkedIn post will appear here…",
     btnTranslate: "Translate",
+    editOriginal: "Edit original",
     copy: "Copy",
     loading: "Translating…",
     postNow: "now",
@@ -39,12 +40,13 @@ const STRINGS = {
     paneSource: "Звичайна мова",
     paneSourceHint: "Що ви маєте на увазі",
     paneTarget: "LinkedIn",
-    paneTargetHint: "Корпоративний тон",
+    paneTargetHint: "Пост у LinkedIn",
     labelRaw: "Ваша справжня фраза",
     placeholderRaw:
       "напр.: мене взяли за шахрайство, або забрали машину після дропу.",
     placeholderOutput: "Тут з’явиться ваш LinkedIn-допис…",
     btnTranslate: "Перекласти",
+    editOriginal: "Редагувати оригінал",
     copy: "Копіювати",
     loading: "Перекладаємо…",
     postNow: "щойно",
@@ -110,6 +112,10 @@ document.querySelectorAll("[data-lang-ui]").forEach((btn) => {
   });
 });
 
+const appShell = document.getElementById("appShell");
+const translatorCard = document.getElementById("translatorCard");
+const expandOriginalBtn = document.getElementById("expandOriginalBtn");
+
 const translateBtn = document.getElementById("translateBtn");
 const errorMsg = document.getElementById("errorMsg");
 const resultText = document.getElementById("resultText");
@@ -169,6 +175,19 @@ function showError(msg) {
   errorMsg.hidden = !msg;
 }
 
+function enterOutputFocus() {
+  translatorCard?.classList.add("translator--output-focus");
+  appShell?.classList.add("reading-output");
+  if (expandOriginalBtn) expandOriginalBtn.hidden = false;
+}
+
+function exitOutputFocus() {
+  translatorCard?.classList.remove("translator--output-focus");
+  appShell?.classList.remove("reading-output");
+  if (expandOriginalBtn) expandOriginalBtn.hidden = true;
+  requestAnimationFrame(() => fitRawInput());
+}
+
 async function translate() {
   const text = rawInput.value.trim();
   if (!text) {
@@ -177,6 +196,7 @@ async function translate() {
   }
 
   showError("");
+  enterOutputFocus();
   translateBtn.disabled = true;
   copyBtn.disabled = true;
   resultText.hidden = true;
@@ -211,6 +231,7 @@ async function translate() {
     } else {
       resultEmpty.hidden = false;
       resultText.hidden = true;
+      exitOutputFocus();
     }
   } finally {
     targetLoading.hidden = true;
@@ -219,6 +240,11 @@ async function translate() {
 }
 
 translateBtn.addEventListener("click", translate);
+
+expandOriginalBtn?.addEventListener("click", () => {
+  exitOutputFocus();
+  rawInput?.focus();
+});
 
 rawInput.addEventListener("input", () => fitRawInput());
 rawInput.addEventListener("paste", () => requestAnimationFrame(() => fitRawInput()));

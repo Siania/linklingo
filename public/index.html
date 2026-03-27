@@ -12,13 +12,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="app-shell">
+    <div class="app-shell" id="appShell">
       <header class="topbar">
         <div class="topbar-inner">
           <a class="brand" href="#" aria-label="Linklingo home">
@@ -61,7 +61,10 @@
             </div>
           </div>
 
-          <div class="card translator">
+          <div class="card translator" id="translatorCard">
+            <button type="button" class="edit-original-btn" id="expandOriginalBtn" hidden data-i18n="editOriginal">
+              Edit original
+            </button>
             <div class="translator-pane translator-pane--from">
               <div class="pane-header">
                 <span class="pane-label" data-i18n="paneSource">Plain language</span>
@@ -97,7 +100,7 @@
                   <span class="pane-icon-in" aria-hidden="true">in</span>
                   <div class="pane-title-text">
                     <span class="pane-label" data-i18n="paneTarget">LinkedIn</span>
-                    <span class="pane-hint" data-i18n="paneTargetHint">Corporate voice</span>
+                    <span class="pane-hint" data-i18n="paneTargetHint">LinkedIn post</span>
                   </div>
                 </div>
                 <button type="button" class="btn-copy" id="copyBtn" disabled>

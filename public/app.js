@@ -3,8 +3,6 @@ const LS_TAGLINE = "linklingo_profile_tagline";
 
 const STRINGS = {
   en: {
-    statViews: "Views",
-    statImpressions: "Impressions",
     labelProfileName: "Display name",
     labelProfileTagline: "Headline",
     placeholderProfileName: "Jamie Hustle",
@@ -17,7 +15,6 @@ const STRINGS = {
     placeholderRaw:
       "e.g. I got arrested for fraud, or they towed my car after the NFT drop.",
     placeholderOutput: "Your LinkedIn post will appear here…",
-    outputLangLabel: "Post language",
     btnTranslate: "Translate",
     copy: "Copy",
     loading: "Translating…",
@@ -28,14 +25,12 @@ const STRINGS = {
     news3: "Thought leadership enters flow state",
     footerNote: "Powered by AI · Not affiliated with LinkedIn",
     footerDisclaimer:
-      "This isn’t an original idea, and I don’t claim ownership of it. @",
+      "@This isn’t an original idea, and I don’t claim ownership of it.",
     copied: "Copied",
     previewNameFallback: "Your Name",
     previewTaglineFallback: "Professional storyteller",
   },
   uk: {
-    statViews: "Перегляди",
-    statImpressions: "Покази",
     labelProfileName: "Ім’я в профілі",
     labelProfileTagline: "Підпис",
     placeholderProfileName: "Джеймі Хасл",
@@ -49,7 +44,6 @@ const STRINGS = {
     placeholderRaw:
       "напр.: мене взяли за шахрайство, або забрали машину після дропу.",
     placeholderOutput: "Тут з’явиться ваш LinkedIn-допис…",
-    outputLangLabel: "Мова допису",
     btnTranslate: "Перекласти",
     copy: "Копіювати",
     loading: "Перекладаємо…",
@@ -60,7 +54,7 @@ const STRINGS = {
     news3: "Таут-лідерство входить у потік",
     footerNote: "На базі ШІ · Не пов’язано з LinkedIn",
     footerDisclaimer:
-      "Це не оригінальна ідея; я не претендую на авторство. @",
+      "@Це не оригінальна ідея; я не претендую на авторство.",
     copied: "Скопійовано",
     previewNameFallback: "Ваше ім’я",
     previewTaglineFallback: "Професійний оповідач",
@@ -68,7 +62,6 @@ const STRINGS = {
 };
 
 let uiLang = "en";
-let outLang = "en";
 
 function applyI18n() {
   const t = STRINGS[uiLang];
@@ -96,15 +89,6 @@ document.querySelectorAll("[data-lang-ui]").forEach((btn) => {
     });
     applyI18n();
     syncPreviewLabels();
-  });
-});
-
-document.querySelectorAll("[data-lang-out]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    outLang = btn.getAttribute("data-lang-out") === "uk" ? "uk" : "en";
-    document.querySelectorAll("[data-lang-out]").forEach((b) => {
-      b.classList.toggle("is-active", b === btn);
-    });
   });
 });
 
@@ -187,7 +171,7 @@ async function translate() {
     const res = await fetch("/api/translate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, lang: outLang }),
+      body: JSON.stringify({ text, lang: uiLang }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {

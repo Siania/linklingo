@@ -23,6 +23,9 @@ const STRINGS = {
     news1: "Buzzwords up 12% week over week",
     news2: "“Thrilled to share” remains #1 opener",
     news3: "Thought leadership enters flow state",
+    footerNote: "Powered by AI · Not affiliated with LinkedIn",
+    footerDisclaimer:
+      "@This isn’t an original idea, and I don’t claim ownership of it.",
     footerCredit:
       'Made with "love" to corporate world by Oksana Kozhan',
     copied: "Copied",
@@ -51,6 +54,9 @@ const STRINGS = {
     news1: "Базворди зросли на 12% за тиждень",
     news2: "«Радію поділитися» лідирує в інтро",
     news3: "Таут-лідерство входить у потік",
+    footerNote: "На базі ШІ · Не пов’язано з LinkedIn",
+    footerDisclaimer:
+      "@Це не оригінальна ідея; я не претендую на авторство.",
     footerCredit:
       'Зроблено з «любов’ю» до корпоративного світу — Оксана Кожан',
     copied: "Скопійовано",

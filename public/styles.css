@@ -758,6 +758,21 @@ body::after {
   opacity: 0.95;
 }
 
+.footer-note {
+  margin: 0;
+  max-width: 22rem;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.footer-disclaimer {
+  margin: 0;
+  max-width: 22rem;
+  font-size: 9px;
+  opacity: 0.92;
+  line-height: 1.35;
+}
+
 .footer-credit {
   margin: 0;
   max-width: 22rem;

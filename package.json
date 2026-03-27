@@ -10,6 +10,7 @@
     "git:sync": "node scripts/git-sync.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
   },

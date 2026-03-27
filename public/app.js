@@ -1,6 +1,3 @@
-const LS_NAME = "linklingo_profile_name";
-const LS_TAGLINE = "linklingo_profile_tagline";
-
 const STRINGS = {
   en: {
     labelProfileName: "Display name",
@@ -150,24 +147,28 @@ function syncPreviewLabels() {
   resultPreviewSub.textContent = previewDisplayTagline();
 }
 
-function persistProfile() {
+/** Fresh visit: no persisted fields, no leftover translation UI. */
+function resetSessionUi() {
   try {
-    localStorage.setItem(LS_NAME, profileNameInput?.value ?? "");
-    localStorage.setItem(LS_TAGLINE, profileTaglineInput?.value ?? "");
+    localStorage.removeItem("linklingo_profile_name");
+    localStorage.removeItem("linklingo_profile_tagline");
   } catch {
     /* ignore */
   }
-}
-
-function loadProfile() {
-  try {
-    const n = localStorage.getItem(LS_NAME);
-    const t = localStorage.getItem(LS_TAGLINE);
-    if (n != null) profileNameInput.value = n;
-    if (t != null) profileTaglineInput.value = t;
-  } catch {
-    /* ignore */
+  if (rawInput) rawInput.value = "";
+  if (profileNameInput) profileNameInput.value = "";
+  if (profileTaglineInput) profileTaglineInput.value = "";
+  if (resultText) {
+    resultText.textContent = "";
+    resultText.hidden = true;
   }
+  if (resultEmpty) resultEmpty.hidden = false;
+  if (targetLoading) targetLoading.hidden = true;
+  if (resultPreviewHead) resultPreviewHead.hidden = true;
+  if (copyBtn) copyBtn.disabled = true;
+  showError("");
+  setResultSplitLayout(false);
+  requestAnimationFrame(() => fitRawInput());
 }
 
 function showError(msg) {
@@ -244,9 +245,6 @@ rawInput.addEventListener("keydown", (e) => {
   }
 });
 
-profileNameInput?.addEventListener("input", persistProfile);
-profileTaglineInput?.addEventListener("input", persistProfile);
-
 copyBtn.addEventListener("click", async () => {
   const t = STRINGS[uiLang];
   const label = copyBtn.querySelector('[data-i18n="copy"]');
@@ -262,7 +260,7 @@ copyBtn.addEventListener("click", async () => {
   }
 });
 
-loadProfile();
+resetSessionUi();
 applyI18n();
 syncPreviewLabels();
 requestAnimationFrame(() => fitRawInput());

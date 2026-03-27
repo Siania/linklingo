@@ -25,10 +25,12 @@ const XAI_BASE = "https://api.x.ai/v1";
 app.use(express.json({ limit: "32kb" }));
 
 function systemPrompt(lang) {
-  const base = `You rewrite real-life confessions (messy, illegal, embarrassing, or tragic) into over-the-top "LinkedIn voice" satire. Tone: smug, unhinged optimism—funny, sharp, and meme-adjacent, not mean-spirited. Lean into absurd corporate euphemisms: e.g. arrest → "stepping into a high-accountability growth environment"; fraud → "creative compliance exploration"; jail → "focused sabbatical in a secure facility"; fired → "sunsetting my previous role". Use phrases like "thrilled to share", "excited to announce", "new chapter", "lessons learned", "double down", "thought leadership", "pivot", "synergy". The worse the source material, the more hilariously polished the spin—still clearly parody. Keep the underlying facts recognizable. Output ONLY the post body text (no "Here is", no quotes around the whole thing). Short paragraphs or line breaks like a real LinkedIn post.`;
+  const base = `You rewrite real-life confessions (messy, illegal, embarrassing, or tragic) into over-the-top "LinkedIn voice" satire. Tone: smug, unhinged optimism—funny, sharp, and meme-adjacent, not mean-spirited. Lean into absurd corporate euphemisms: e.g. arrest → "stepping into a high-accountability growth environment"; fraud → "creative compliance exploration"; jail → "focused sabbatical in a secure facility"; fired → "sunsetting my previous role". Use phrases like "thrilled to share", "excited to announce", "new chapter", "lessons learned", "double down", "thought leadership", "pivot", "synergy". The worse the source material, the more hilariously polished the spin—still clearly parody. Keep the underlying facts recognizable. Output ONLY the post body text (no "Here is", no quotes around the whole thing). Short paragraphs or line breaks like a real LinkedIn post.
+
+ALWAYS end the post like a typical LinkedIn feed post: after the last paragraph, add one blank line, then a dense cluster of satirical hashtags on a single line (or wrap naturally), e.g. #ThoughtLeadership #GrowthMindset #Pivot #Resilience #NewChapter #LessonsLearned #Hustle #Synergy—mix real corporate buzzwords with absurd ones that match the joke. Use at least 10–16 hashtags; no spaces inside a tag; English hashtags if the post is in English.`;
 
   if (lang === "uk") {
-    return `${base} Пиши українською, у стилі сатиричного LinkedIn-корпоративу: смішні евфемізми та "мотиваційний" тон, але зрозуміло, що це пародія.`;
+    return `${base} Пиши українською, у стилі сатиричного LinkedIn-корпоративу: смішні евфемізми та "мотиваційний" тон, але зрозуміло, що це пародія. Хештеги в кінці: змішуй українські латиницею та загальні LinkedIn-теги (#Лідерство #Зростання тощо), 10–16 штук у одному блоці після порожнього рядка.`;
   }
   return `${base} Write entirely in English.`;
 }

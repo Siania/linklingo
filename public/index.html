@@ -37,9 +37,24 @@
           <div class="card profile-strip">
             <div class="profile-strip-inner">
               <div class="avatar sm profile-strip-avatar" aria-hidden="true">You</div>
-              <div class="profile-strip-text">
-                <p class="profile-name" data-i18n="profileName">Your Name</p>
-                <p class="profile-line" data-i18n="profileTagline">Professional storyteller</p>
+              <div class="profile-strip-fields">
+                <label class="sr-only" for="profileNameInput" data-i18n="labelProfileName">Display name</label>
+                <input
+                  type="text"
+                  id="profileNameInput"
+                  class="profile-input profile-input-name"
+                  maxlength="80"
+                  autocomplete="nickname"
+                  data-i18n-placeholder="placeholderProfileName"
+                />
+                <label class="sr-only" for="profileTaglineInput" data-i18n="labelProfileTagline">Headline</label>
+                <input
+                  type="text"
+                  id="profileTaglineInput"
+                  class="profile-input profile-input-tagline"
+                  maxlength="140"
+                  data-i18n-placeholder="placeholderProfileTagline"
+                />
               </div>
             </div>
             <div class="profile-stats">
@@ -118,6 +133,22 @@
                 aria-live="polite"
                 aria-label="LinkedIn translation"
               >
+                <div class="result-preview-head" id="resultPreviewHead" hidden>
+                  <div class="avatar sm result-preview-avatar" aria-hidden="true">You</div>
+                  <div class="result-preview-meta">
+                    <p class="result-preview-name" id="resultPreviewName"></p>
+                    <p class="result-preview-sub" id="resultPreviewSub"></p>
+                    <p class="result-preview-time">
+                      <span data-i18n="postNow">now</span>
+                      ·
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path
+                          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                        />
+                      </svg>
+                    </p>
+                  </div>
+                </div>
                 <p class="pane-placeholder" id="resultEmpty" data-i18n="placeholderOutput">
                   Your LinkedIn post will appear here…
                 </p>
@@ -144,6 +175,9 @@
 
           <footer class="footer-mini">
             <span data-i18n="footerNote">Powered by AI · Not affiliated with LinkedIn</span>
+            <p class="footer-disclaimer" data-i18n="footerDisclaimer">
+              This isn’t an original idea, and I don’t claim ownership of it. @
+            </p>
           </footer>
         </section>
       </main>

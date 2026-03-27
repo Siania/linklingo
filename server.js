@@ -1,32 +1,34 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Load .env from project root (next to server.js), not from process.cwd()
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY?.trim();
 const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
 const OPENAI_BASE = "https://api.openai.com/v1";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY?.trim();
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
-const XAI_API_KEY = process.env.XAI_API_KEY;
+const XAI_API_KEY = process.env.XAI_API_KEY?.trim();
 const XAI_MODEL = process.env.XAI_MODEL || "grok-4-1-fast-non-reasoning";
 const XAI_BASE = "https://api.x.ai/v1";
 
 app.use(express.json({ limit: "32kb" }));
 
 function systemPrompt(lang) {
-  const base = `You rewrite casual, blunt, or negative real-life statements into the exaggerated "LinkedIn voice": upbeat, corporate, full of phrases like "thrilled to share", "excited to announce", "personal and professional journey", "double down", "embrace grit", soft euphemisms for bad news, and fake wisdom. Sound authentic to the platform but clearly satirical. Keep the same underlying facts but spin them positively. Output ONLY the rewritten post text, no quotes around it, no preamble like "Here is". Use short paragraphs or line breaks where a LinkedIn post would.`;
+  const base = `You rewrite real-life confessions (messy, illegal, embarrassing, or tragic) into over-the-top "LinkedIn voice" satire. Tone: smug, unhinged optimism—funny, sharp, and meme-adjacent, not mean-spirited. Lean into absurd corporate euphemisms: e.g. arrest → "stepping into a high-accountability growth environment"; fraud → "creative compliance exploration"; jail → "focused sabbatical in a secure facility"; fired → "sunsetting my previous role". Use phrases like "thrilled to share", "excited to announce", "new chapter", "lessons learned", "double down", "thought leadership", "pivot", "synergy". The worse the source material, the more hilariously polished the spin—still clearly parody. Keep the underlying facts recognizable. Output ONLY the post body text (no "Here is", no quotes around the whole thing). Short paragraphs or line breaks like a real LinkedIn post.`;
 
   if (lang === "uk") {
-    return `${base} Write entirely in Ukrainian (українська мова), matching Ukrainian LinkedIn / business social style.`;
+    return `${base} Пиши українською, у стилі сатиричного LinkedIn-корпоративу: смішні евфемізми та "мотиваційний" тон, але зрозуміло, що це пародія.`;
   }
   return `${base} Write entirely in English.`;
 }

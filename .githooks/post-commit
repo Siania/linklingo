@@ -1,0 +1,4 @@
+#!/bin/sh
+# After each local commit, push the current branch to origin (quiet on failure).
+branch=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
+git push origin "$branch" 2>/dev/null || exit 0

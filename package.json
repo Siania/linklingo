@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "prepare": "node scripts/setup-hooks.mjs",
+    "git:sync": "node scripts/git-sync.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

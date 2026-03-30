@@ -47,6 +47,7 @@ function clientIp(req) {
 }
 
 function appendRequestLog(req, plainText, linkedInText, lang, kind = "post") {
+  if (process.env.ENABLE_REQUEST_LOG !== "true") return;
   ensureDataDir();
   const line =
     JSON.stringify({
@@ -544,6 +545,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.listen(PORT, () => {
   console.log(`Linklingo at http://localhost:${PORT}`);
   if (ADMIN_SECRET) {
-    console.log(`Admin request log: GET /admin.html (paste ADMIN_SECRET)`);
+    if (process.env.ENABLE_REQUEST_LOG === "true") {
+      console.log(`Admin request log: GET /admin.html (paste ADMIN_SECRET)`);
+    } else {
+      console.log(`Request logging off (ENABLE_REQUEST_LOG≠true); admin log stays empty unless enabled.`);
+    }
   }
 });

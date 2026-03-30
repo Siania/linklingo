@@ -1,7 +1,4 @@
-import { inject } from "/vendor/vercel-analytics.mjs";
 import { extractCvText } from "/cv-parse.mjs";
-
-inject();
 
 const STRINGS = {
   en: {
@@ -27,6 +24,7 @@ const STRINGS = {
     news2: "“Thrilled to share” remains #1 opener",
     news3: "Thought leadership enters flow state",
     footerNote: "Powered by AI · Not affiliated with LinkedIn",
+    footerPrivacy: "Privacy",
     footerDisclaimer:
       "@This isn’t an original idea, and I don’t claim ownership of it.",
     footerCredit:
@@ -97,6 +95,7 @@ const STRINGS = {
     news2: "«Радію поділитися» лідирує в інтро",
     news3: "Таут-лідерство входить у потік",
     footerNote: "На базі ШІ · Не пов’язано з LinkedIn",
+    footerPrivacy: "Конфіденційність",
     footerDisclaimer:
       "@Це не оригінальна ідея; я не претендую на авторство.",
     footerCredit:
@@ -168,6 +167,7 @@ const STRINGS = {
     news2: "„Freue mich zu teilen“ bleibt Opener Nr. 1",
     news3: "Thought Leadership erreicht den Flow-Zustand",
     footerNote: "KI-gestützt · Nicht mit LinkedIn verbunden",
+    footerPrivacy: "Datenschutz",
     footerDisclaimer:
       "@Keine Originalidee; ich erhebe keinen Besitzanspruch.",
     footerCredit:

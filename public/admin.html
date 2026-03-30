@@ -92,7 +92,8 @@
       <h1>Request log (all users)</h1>
       <p class="admin-lead">
         Paste the same <code>ADMIN_SECRET</code> as in the server <code>.env</code>. The secret is sent only to your server
-        over HTTPS in production — do not share it.
+        over HTTPS in production — do not share it. Entries appear only if the server has
+        <code>ENABLE_REQUEST_LOG=true</code>.
       </p>
       <form class="admin-form" id="adminForm" autocomplete="off">
         <input type="password" id="adminSecret" placeholder="Admin secret" spellcheck="false" />

@@ -3,12 +3,17 @@ import fs from "fs";
 import express from "express";
 import multer from "multer";
 import path from "path";
-import { PDFParse } from "pdf-parse";
 import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 // Load .env from project root (next to server.js), not from process.cwd()
 dotenv.config({ path: path.join(__dirname, ".env") });
+
+/** Only true when started with `node server.js` — false when Vercel imports this module as a serverless handler. */
+const isMainRun =
+  typeof process.argv[1] === "string" &&
+  path.resolve(process.argv[1]) === path.resolve(__filename);
 
 const app = express();
 app.set("trust proxy", 1);
@@ -102,6 +107,7 @@ app.post("/api/extract-pdf", uploadPdf.single("file"), async (req, res) => {
 
   let parser;
   try {
+    const { PDFParse } = await import("pdf-parse");
     parser = new PDFParse({ data: req.file.buffer });
     const { text } = await parser.getText();
     await parser.destroy();
@@ -542,13 +548,31 @@ app.get("/api/admin/requests", (req, res) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.listen(PORT, () => {
-  console.log(`Linklingo at http://localhost:${PORT}`);
-  if (ADMIN_SECRET) {
-    if (process.env.ENABLE_REQUEST_LOG === "true") {
-      console.log(`Admin request log: GET /admin.html (paste ADMIN_SECRET)`);
-    } else {
-      console.log(`Request logging off (ENABLE_REQUEST_LOG≠true); admin log stays empty unless enabled.`);
+/* Local / Node: listen. Vercel imports this file — argv[1] is not server.js, so we only export `app`. */
+if (isMainRun) {
+  const server = app.listen(PORT, () => {
+    console.log(`Linklingo at http://localhost:${PORT}`);
+    if (ADMIN_SECRET) {
+      if (process.env.ENABLE_REQUEST_LOG === "true") {
+        console.log(`Admin request log: GET /admin.html (paste ADMIN_SECRET)`);
+      } else {
+        console.log(
+          `Request logging off (ENABLE_REQUEST_LOG is not "true"); admin log stays empty unless enabled.`,
+        );
+      }
     }
-  }
-});
+  });
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.error(
+        `Port ${PORT} is already in use. Stop the other process or set PORT to a free port (e.g. PORT=3001).`,
+      );
+    } else {
+      console.error(err);
+    }
+    process.exit(1);
+  });
+}
+
+export default app;

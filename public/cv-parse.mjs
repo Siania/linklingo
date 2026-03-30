@@ -1,6 +1,12 @@
-/** Client-side CV text extraction — PDFs go to /api/extract-pdf; other formats stay in-browser. */
+/**
+ * CV text extraction — PDFs are read in the browser first (PDF.js), then /api/extract-pdf as fallback.
+ * Serverless hosts often cannot run pdf-parse reliably; browser extraction fixes that.
+ */
 
 const MAX_BYTES = 12 * 1024 * 1024;
+
+/** PDF.js from esm.sh (same pattern as mammoth in extractDocx). */
+const PDFJS_BASE = "https://esm.sh/pdfjs-dist@4.4.168/build";
 
 function err(code, cause) {
   const e = new Error(code);
@@ -9,7 +15,39 @@ function err(code, cause) {
   return e;
 }
 
-async function extractPdf(file) {
+async function extractPdfInBrowser(file) {
+  const pdfjsLib = await import(`${PDFJS_BASE}/pdf.mjs`);
+  const getDocument =
+    typeof pdfjsLib.getDocument === "function"
+      ? pdfjsLib.getDocument
+      : pdfjsLib.default?.getDocument;
+  if (typeof getDocument !== "function") {
+    throw new Error("pdfjs getDocument unavailable");
+  }
+  if (pdfjsLib.GlobalWorkerOptions) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}/pdf.worker.mjs`;
+  }
+
+  const data = new Uint8Array(await file.arrayBuffer());
+  const loadingTask = getDocument({ data });
+  const pdf = await loadingTask.promise;
+
+  let full = "";
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p);
+    const textContent = await page.getTextContent();
+    const parts = [];
+    for (const item of textContent.items) {
+      if (item && typeof item.str === "string" && item.str) {
+        parts.push(item.str);
+      }
+    }
+    full += parts.join(" ") + "\n";
+  }
+  return full.trim();
+}
+
+async function extractPdfViaServer(file) {
   let res;
   try {
     const fd = new FormData();
@@ -26,6 +64,18 @@ async function extractPdf(file) {
   const text = typeof data.text === "string" ? data.text.trim() : "";
   if (!text) throw err("PDF_NO_TEXT");
   return { text, format: ".pdf" };
+}
+
+async function extractPdf(file) {
+  try {
+    const text = await extractPdfInBrowser(file);
+    if (text.length > 0) {
+      return { text, format: ".pdf" };
+    }
+  } catch {
+    /* fall through to server */
+  }
+  return extractPdfViaServer(file);
 }
 
 async function extractDocx(file) {

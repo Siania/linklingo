@@ -93,7 +93,7 @@ const uploadPdf = multer({
   limits: { fileSize: 12 * 1024 * 1024 },
 });
 
-/** PDF text extraction in Node (browser PDF.js was unreliable across hosts/MIME). */
+/** PDF text extraction fallback (browser uses PDF.js first; serverless often cannot load pdf-parse). */
 app.post("/api/extract-pdf", uploadPdf.single("file"), async (req, res) => {
   if (!req.file?.buffer?.length) {
     return res.status(400).json({ error: "No file uploaded." });

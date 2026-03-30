@@ -53,7 +53,7 @@ const STRINGS = {
     dropzoneBrowse: "or tap to browse",
     dropzoneFormats: "PDF · Word (.docx) · Plain text · Markdown",
     dropzonePrivacy:
-      "PDFs are parsed on the server in memory (not saved). Word & text stay in your browser until you generate.",
+      "PDF text is read in your browser first. Word and plain text stay local until you generate.",
     clearFileAria: "Remove file",
     parsingFile: "Reading file…",
     errFileTooLarge: "File is too large (max 12 MB).",
@@ -125,7 +125,7 @@ const STRINGS = {
     dropzoneBrowse: "або натисніть, щоб обрати",
     dropzoneFormats: "PDF · Word (.docx) · Текст · Markdown",
     dropzonePrivacy:
-      "PDF обробляються на сервері в пам’яті (не зберігаються). Word і текст — у браузері до генерації.",
+      "Текст PDF спочатку читається в браузері. Word і текст залишаються локально до генерації.",
     clearFileAria: "Прибрати файл",
     parsingFile: "Читаємо файл…",
     errFileTooLarge: "Файл завеликий (макс. 12 МБ).",
@@ -197,7 +197,7 @@ const STRINGS = {
     dropzoneBrowse: "oder tippen zum Auswählen",
     dropzoneFormats: "PDF · Word (.docx) · Klartext · Markdown",
     dropzonePrivacy:
-      "PDFs werden kurz serverseitig im RAM gelesen (nicht gespeichert). Word & Text bleiben im Browser bis „Erzeugen“.",
+      "PDF-Text wird zuerst im Browser gelesen. Word und Klartext bleiben lokal bis „Erzeugen“.",
     clearFileAria: "Datei entfernen",
     parsingFile: "Datei wird gelesen…",
     errFileTooLarge: "Datei zu groß (max. 12 MB).",

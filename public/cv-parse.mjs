@@ -1,12 +1,9 @@
 /**
  * CV text extraction — PDFs are read in the browser first (PDF.js), then /api/extract-pdf as fallback.
- * Serverless hosts often cannot run pdf-parse reliably; browser extraction fixes that.
+ * PDF.js is vendored under /vendor/pdfjs (see scripts/copy-pdfjs.mjs) so CSP and workers work reliably.
  */
 
 const MAX_BYTES = 12 * 1024 * 1024;
-
-/** PDF.js from esm.sh (same pattern as mammoth in extractDocx). */
-const PDFJS_BASE = "https://esm.sh/pdfjs-dist@4.4.168/build";
 
 function err(code, cause) {
   const e = new Error(code);
@@ -15,8 +12,15 @@ function err(code, cause) {
   return e;
 }
 
+function pdfJsAssetUrls() {
+  const pdfMain = new URL("/vendor/pdfjs/pdf.mjs", import.meta.url).href;
+  const pdfWorker = new URL("/vendor/pdfjs/pdf.worker.mjs", import.meta.url).href;
+  return { pdfMain, pdfWorker };
+}
+
 async function extractPdfInBrowser(file) {
-  const pdfjsLib = await import(`${PDFJS_BASE}/pdf.mjs`);
+  const { pdfMain, pdfWorker } = pdfJsAssetUrls();
+  const pdfjsLib = await import(pdfMain);
   const getDocument =
     typeof pdfjsLib.getDocument === "function"
       ? pdfjsLib.getDocument
@@ -25,7 +29,7 @@ async function extractPdfInBrowser(file) {
     throw new Error("pdfjs getDocument unavailable");
   }
   if (pdfjsLib.GlobalWorkerOptions) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}/pdf.worker.mjs`;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
   }
 
   const data = new Uint8Array(await file.arrayBuffer());
@@ -72,8 +76,8 @@ async function extractPdf(file) {
     if (text.length > 0) {
       return { text, format: ".pdf" };
     }
-  } catch {
-    /* fall through to server */
+  } catch (e) {
+    console.warn("PDF.js (browser) failed, trying server:", e);
   }
   return extractPdfViaServer(file);
 }

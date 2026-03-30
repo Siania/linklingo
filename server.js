@@ -546,7 +546,15 @@ app.get("/api/admin/requests", (req, res) => {
   res.json({ entries });
 });
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    setHeaders(res, filePath) {
+      if (filePath.endsWith(".mjs")) {
+        res.setHeader("Content-Type", "application/javascript; charset=utf-8");
+      }
+    },
+  }),
+);
 
 /* Local / Node: listen. Vercel imports this file — argv[1] is not server.js, so we only export `app`. */
 if (isMainRun) {

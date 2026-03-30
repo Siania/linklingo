@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "prepare": "node scripts/setup-hooks.mjs && node scripts/sync-vercel-analytics.mjs",
+    "prepare": "node scripts/setup-hooks.mjs && node scripts/sync-vercel-analytics.mjs && node scripts/copy-pdfjs.mjs",
     "git:sync": "node scripts/git-sync.mjs"
   },
   "dependencies": {
@@ -15,7 +15,8 @@
     "express": "^4.21.2",
     "mammoth": "^1.12.0",
     "multer": "^2.1.1",
-    "pdf-parse": "^2.4.5"
+    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^4.4.168"
   },
   "engines": {
     "node": "22.x"

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Linklingo — Request log</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .admin-page {
+        padding: 16px;
+        max-width: 900px;
+        margin: 0 auto;
+        min-height: 100dvh;
+        box-sizing: border-box;
+      }
+      .admin-page h1 {
+        font-size: 1.25rem;
+        margin: 0 0 8px;
+      }
+      .admin-page .admin-lead {
+        font-size: 13px;
+        color: var(--li-muted);
+        margin: 0 0 12px;
+      }
+      .admin-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .admin-form input[type="password"] {
+        flex: 1;
+        min-width: 200px;
+        max-width: 360px;
+        padding: 8px 10px;
+        border: 1px solid var(--li-border);
+        border-radius: 8px;
+        font: inherit;
+      }
+      .admin-form button {
+        padding: 8px 16px;
+        border-radius: 999px;
+        border: none;
+        background: var(--li-blue);
+        color: #fff;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .admin-err {
+        color: #b91c1c;
+        font-size: 13px;
+        margin: 0 0 8px;
+      }
+      .admin-entry {
+        border: 1px solid var(--glass-border-soft);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        margin-bottom: 12px;
+        background: rgba(255, 255, 255, 0.65);
+      }
+      .admin-meta {
+        font-size: 11px;
+        color: var(--li-muted);
+        margin-bottom: 8px;
+      }
+      .admin-label {
+        font-weight: 700;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--li-muted);
+        margin-top: 8px;
+      }
+      .admin-label:first-of-type {
+        margin-top: 0;
+      }
+      .admin-pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 12px;
+        line-height: 1.4;
+        margin: 4px 0 0;
+        color: var(--li-text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-page">
+      <h1>Request log (all users)</h1>
+      <p class="admin-lead">
+        Paste the same <code>ADMIN_SECRET</code> as in the server <code>.env</code>. The secret is sent only to your server
+        over HTTPS in production — do not share it.
+      </p>
+      <form class="admin-form" id="adminForm" autocomplete="off">
+        <input type="password" id="adminSecret" placeholder="Admin secret" spellcheck="false" />
+        <button type="submit">Load</button>
+      </form>
+      <p class="admin-err" id="adminErr" hidden></p>
+      <div id="adminOut"></div>
+    </div>
+    <script>
+      const form = document.getElementById("adminForm");
+      const out = document.getElementById("adminOut");
+      const errEl = document.getElementById("adminErr");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errEl.hidden = true;
+        errEl.textContent = "";
+        out.replaceChildren();
+
+        const secret = document.getElementById("adminSecret").value.trim();
+        if (!secret) return;
+
+        let res;
+        try {
+          res = await fetch("/api/admin/requests", {
+            headers: { Authorization: "Bearer " + secret },
+          });
+        } catch {
+          errEl.textContent = "Network error.";
+          errEl.hidden = false;
+          return;
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          errEl.textContent = data.error || res.statusText || "Error";
+          errEl.hidden = false;
+          return;
+        }
+
+        const entries = data.entries || [];
+        if (entries.length === 0) {
+          const p = document.createElement("p");
+          p.className = "admin-lead";
+          p.textContent = "No requests logged yet (successful API calls appear here).";
+          out.appendChild(p);
+          return;
+        }
+
+        for (const row of entries) {
+          const box = document.createElement("div");
+          box.className = "admin-entry";
+
+          const meta = document.createElement("div");
+          meta.className = "admin-meta";
+          const t = row.t ? new Date(row.t).toISOString() : "—";
+          const kind = row.kind === "about" ? "about" : "post";
+          meta.textContent = `${t} · ${row.lang || "?"} · ${kind} · IP: ${row.ip || "—"}`;
+
+          const l1 = document.createElement("div");
+          l1.className = "admin-label";
+          l1.textContent = kind === "about" ? "Input (CV / About)" : "Plain text";
+          const p1 = document.createElement("pre");
+          p1.className = "admin-pre";
+          p1.textContent = row.text || "";
+
+          const l2 = document.createElement("div");
+          l2.className = "admin-label";
+          l2.textContent = "LinkedIn output";
+          const p2 = document.createElement("pre");
+          p2.className = "admin-pre";
+          p2.textContent = row.result || "";
+
+          box.append(meta, l1, p1, l2, p2);
+          out.appendChild(box);
+        }
+      });
+    </script>
+  </body>
+</html>

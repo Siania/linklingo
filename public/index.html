@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="Linklingo" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <title>Linklingo — LinkedIn voice translator</title>
+    <title>Linklingo — LinkedIn voice &amp; About</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,10 +25,17 @@
             <span class="brand-icon" aria-hidden="true">in</span>
             <span class="brand-text">Linklingo</span>
           </a>
-          <nav class="top-actions" aria-label="Language">
+          <nav class="top-actions" aria-label="App">
+            <button type="button" class="backlog-open-btn" id="backlogOpenBtn" data-i18n="backlogOpen">
+              History
+            </button>
             <div class="lang-switch" role="group" aria-label="Interface language">
               <button type="button" class="lang-btn is-active" data-lang-ui="en">EN</button>
               <button type="button" class="lang-btn" data-lang-ui="uk">UA</button>
+              <button type="button" class="lang-btn lang-btn--demo" data-lang-ui="de">
+                <span class="lang-btn-main">DE</span>
+                <span class="lang-new-badge" data-i18n="langBadgeNew">New</span>
+              </button>
             </div>
           </nav>
         </div>
@@ -61,6 +68,34 @@
             </div>
           </div>
 
+          <div class="card mode-tabs" role="tablist" data-i18n-aria="modeAriaLabel" aria-label="Tool">
+            <button
+              type="button"
+              class="mode-tab is-active"
+              id="modePostTab"
+              role="tab"
+              aria-selected="true"
+              aria-controls="postPanel"
+              data-mode="post"
+              data-i18n="modePost"
+            >
+              Post
+            </button>
+            <button
+              type="button"
+              class="mode-tab"
+              id="modeAboutTab"
+              role="tab"
+              aria-selected="false"
+              aria-controls="aboutPanel"
+              data-mode="about"
+              data-i18n="modeAbout"
+            >
+              About
+            </button>
+          </div>
+
+          <div class="mode-panel" id="postPanel" role="tabpanel" aria-labelledby="modePostTab">
           <div class="card translator" id="translatorCard">
             <div class="translator-pane translator-pane--from">
               <div class="pane-header">
@@ -78,6 +113,8 @@
               ></textarea>
             </div>
 
+            <p class="error-msg translator-error" id="errorMsg" hidden role="alert"></p>
+
             <div class="translator-bridge" aria-label="Translation">
               <div class="bridge-split" aria-hidden="true">
                 <span class="bridge-line"></span>
@@ -86,7 +123,7 @@
               </div>
               <div class="bridge-controls">
                 <button type="button" class="btn-primary" id="translateBtn">
-                  <span data-i18n="btnTranslate">Translate to LinkedIn</span>
+                  <span data-i18n="btnTranslate">Generate post</span>
                 </button>
               </div>
             </div>
@@ -146,7 +183,122 @@
                 </div>
               </div>
             </div>
-            <p class="error-msg translator-error" id="errorMsg" hidden role="alert"></p>
+          </div>
+          </div>
+
+          <div class="mode-panel" id="aboutPanel" role="tabpanel" aria-labelledby="modeAboutTab" hidden>
+            <div class="card translator about-card" id="aboutCard">
+              <div class="translator-pane translator-pane--from about-pane-source">
+                <div class="pane-header">
+                  <span class="pane-label" data-i18n="aboutCvLabel">Your CV</span>
+                  <span class="pane-hint" data-i18n="aboutCvHint">Paste text or drop a file</span>
+                </div>
+                <label class="sr-only" for="cvInput" data-i18n="labelCv">CV text</label>
+                <div class="cv-upload" id="cvUploadBlock">
+                  <input
+                    type="file"
+                    id="cvFileInput"
+                    class="sr-only"
+                    accept=".pdf,.docx,.doc,.txt,.md,.markdown,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/plain,text/markdown"
+                  />
+                  <div
+                    class="cv-dropzone"
+                    id="cvDropzone"
+                    role="region"
+                    data-i18n-aria="dropzoneAriaLabel"
+                    aria-labelledby="cvDropzoneTitle"
+                    aria-describedby="cvDropzoneDesc"
+                  >
+                    <label for="cvFileInput" class="cv-dropzone-label" id="cvDropzoneDesc">
+                      <span class="cv-dropzone-icon" aria-hidden="true">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linejoin="round"
+                          />
+                          <path d="M14 2v6h6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                          <path d="M12 18v-6M9 15l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                      </span>
+                      <span class="cv-dropzone-title" id="cvDropzoneTitle" data-i18n="dropzoneTitle">Drop your CV here</span>
+                      <span class="cv-dropzone-browse" data-i18n="dropzoneBrowse">or tap to browse</span>
+                      <span class="cv-dropzone-formats" data-i18n="dropzoneFormats">PDF · Word (.docx) · Text · Markdown</span>
+                    </label>
+                  </div>
+                  <p class="cv-dropzone-privacy" data-i18n="dropzonePrivacy">Read in your browser — not uploaded until you generate.</p>
+                  <div class="cv-file-chip" id="cvFileChip" hidden>
+                    <span class="cv-file-chip-icon" aria-hidden="true">✓</span>
+                    <div class="cv-file-chip-text">
+                      <span class="cv-file-name" id="cvFileName"></span>
+                      <span class="cv-file-size" id="cvFileSize"></span>
+                    </div>
+                    <button type="button" class="cv-file-clear" id="cvFileClear" data-i18n-aria="clearFileAria">
+                      ×
+                    </button>
+                  </div>
+                  <p class="cv-parse-line" id="cvParseLine" hidden role="status"></p>
+                </div>
+                <textarea
+                  id="cvInput"
+                  class="pane-input pane-input--about"
+                  rows="6"
+                  spellcheck="false"
+                  data-i18n-placeholder="placeholderCv"
+                ></textarea>
+              </div>
+
+              <p class="error-msg translator-error" id="aboutErrorMsg" hidden role="alert"></p>
+
+              <div class="translator-bridge" aria-label="Generate About">
+                <div class="bridge-split" aria-hidden="true">
+                  <span class="bridge-line"></span>
+                  <span class="bridge-badge">↕</span>
+                  <span class="bridge-line"></span>
+                </div>
+                <div class="bridge-controls">
+                  <button type="button" class="btn-primary" id="aboutGenerateBtn">
+                    <span data-i18n="btnGenerateAbout">Generate About section</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="translator-pane translator-pane--to about-pane-out">
+                <div class="pane-header pane-header--target">
+                  <div class="pane-title-group">
+                    <span class="pane-icon-in" aria-hidden="true">in</span>
+                    <div class="pane-title-text">
+                      <span class="pane-label" data-i18n="paneAboutTarget">LinkedIn</span>
+                      <span class="pane-hint" data-i18n="paneAboutHint">About (Summary)</span>
+                    </div>
+                  </div>
+                  <button type="button" class="btn-copy" id="aboutCopyBtn" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M8 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2M8 7H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2M8 7h8a2 2 0 0 1 2 2v2"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      />
+                    </svg>
+                    <span data-i18n="copy">Copy</span>
+                  </button>
+                </div>
+                <div class="pane-output about-output" id="aboutOutputWrap" role="region" aria-live="polite" aria-label="LinkedIn About">
+                  <p class="pane-placeholder" id="aboutEmpty" data-i18n="placeholderAboutOutput">
+                    Your About section will appear here…
+                  </p>
+                  <div class="pane-result about-result-text" id="aboutResultText" hidden></div>
+                  <div class="pane-loading" id="aboutLoading" hidden>
+                    <div class="sk-line sk-title"></div>
+                    <div class="sk-line"></div>
+                    <div class="sk-line"></div>
+                    <div class="sk-line short"></div>
+                    <p class="loading-text" data-i18n="loadingAbout">Writing your About…</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="card news">
@@ -170,6 +322,23 @@
         </section>
       </main>
     </div>
+
+    <dialog class="backlog-dialog" id="backlogDialog" aria-labelledby="backlogDialogTitle">
+      <div class="backlog-dialog-inner">
+        <header class="backlog-dialog-head">
+          <h2 class="backlog-dialog-title" id="backlogDialogTitle" data-i18n="backlogHeading">Your backlog</h2>
+          <button type="button" class="backlog-close-btn" id="backlogCloseBtn" data-i18n-aria="backlogCloseAria" aria-label="Close">
+            ×
+          </button>
+        </header>
+        <p class="backlog-hint" data-i18n="backlogHint">Saved only on this device — private to you.</p>
+        <ul class="backlog-list" id="backlogList" hidden></ul>
+        <p class="backlog-empty" id="backlogEmpty" data-i18n="backlogEmpty">Nothing saved yet.</p>
+        <footer class="backlog-dialog-foot">
+          <button type="button" class="btn-backlog-clear" id="backlogClearBtn" data-i18n="backlogClear">Clear all</button>
+        </footer>
+      </div>
+    </dialog>
 
     <script src="/app.js" type="module"></script>
   </body>

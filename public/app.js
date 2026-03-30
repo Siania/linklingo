@@ -5,6 +5,7 @@ inject();
 
 const STRINGS = {
   en: {
+    brandTagline: "Level up your LinkedIn game",
     labelProfileName: "Display name",
     labelProfileTagline: "Headline",
     placeholderProfileName: "Jamie Hustle",
@@ -73,6 +74,7 @@ const STRINGS = {
     errCvTooLong: "CV is too long (max 50,000 characters).",
   },
   uk: {
+    brandTagline: "Прокачай свій LinkedIn",
     labelProfileName: "Ім’я в профілі",
     labelProfileTagline: "Підпис",
     placeholderProfileName: "Джеймі Хасл",
@@ -143,6 +145,7 @@ const STRINGS = {
     errCvTooLong: "CV занадто довге (макс. 50 000 символів).",
   },
   de: {
+    brandTagline: "Bring dein LinkedIn aufs nächste Level",
     labelProfileName: "Anzeigename",
     labelProfileTagline: "Headline",
     placeholderProfileName: "Jamie Hustle",

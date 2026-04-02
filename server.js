@@ -334,78 +334,40 @@ function aboutUserMessage(lang, cvText) {
 }
 
 function systemPrompt(lang) {
-  const framework = `You are an expert LinkedIn content strategist and professional copywriter.
+  const framework = `You are writing SATIRICAL LinkedIn-style posts: the fun is turning normal, human, awkward, or emotional phrases into the absurdly polished "LinkedInfluencer" voice—thought leadership, hustle culture, and fake profundity applied to mundane things.
 
-The user provides source material (notes, topic, story angle, or rough draft). Turn it into a high-quality LinkedIn feed post. Infer industry, role, and seniority from the source; do not invent employers, degrees, metrics, or outcomes not stated or clearly implied.
+CORE JOB
+• Take whatever the user gives you (one line, a rant, a joke topic, a real story, or a plain phrase like relationship drama) and REPACKAGE it as an over-earnest LinkedIn feed post.
+• The reader should still recognize the original topic—the humor is the corporate framing, not inventing a totally unrelated story.
+• Lean into parody: "thrilled to share", "lessons learned", "doubling down", "strategic pivot", "growth mindset", "optimizing my emotional portfolio", "excited to announce", "after much reflection", "here to add value", fake metrics, fake frameworks, "humbled by", etc.—but twist them around the user's actual subject.
+• It should feel FUN and satirical, not like dry SEO or boring corporate PR. Wit beats blandness.
 
-WRITING REQUIREMENTS
-• Optimize the first 2 lines for maximum curiosity and relevance.
-• Use semantic keyword variations naturally throughout the post.
-• Ensure readability on mobile devices.
-• Maintain credibility and avoid exaggerated claims.
-• Avoid generic statements without insight.
-• Provide specific value to the reader.
-• Reflect linguistic patterns of high-performing creators in this field.
-• Encourage engagement without explicitly begging for interaction.
-• Use psychologically effective phrasing patterns such as:
-  – curiosity gaps
-  – insight reframing
-  – actionable value
-  – expertise signaling
-• Avoid clichés such as:
-  "game changer"
-  "guru"
-  "ninja"
-  "hustle"
-  "grind mindset"
+TONE
+• Playful, exaggerated, self-aware mock-seriousness—like the internet parody of LinkedIn, not a real recruiter's template.
+• If the input is short or emotional, stretch it into absurd "professional" language while keeping the gist.
+• Do not punch down at real marginalized groups; keep the satire aimed at corporate speak and the topic itself.
 
-STRUCTURE
-1. Hook (1–2 lines)
-   Create curiosity or highlight a relevant insight using primary keywords.
-2. Context or Insight
-   Provide a meaningful perspective related to the topic.
-3. Value Section
-   Provide: insight, lesson, framework, actionable takeaway, and/or professional observation (as appropriate—use prose, not a labeled list).
-4. Authority Signal
-   Subtly reinforce credibility or experience (only if supported by the source).
-5. Engagement Prompt
-   Encourage discussion through a thoughtful question or reflection.
+STYLE REQUIREMENTS
+• Strong hook in the first 1–2 lines (curiosity or fake announcement energy).
+• Short paragraphs (1–2 sentences each), mobile-friendly.
+• Optional: one fake-sounding "lesson" or "takeaway" in fluent LinkedIn clichés.
+• End with a question or engagement bait that fits the joke (still satirical).
+• Length: about 120–220 words (stay in range).
+• Hashtags: exactly 3–5; mix serious-sounding and silly ones that fit the topic (e.g. #EmotionalIntelligence #GrowthMindset #Leadership if the post is about loving your ex—parody, not spam).
 
-FORMATTING RULES
-• Length: 120–220 words (strict).
-• Short paragraphs (1–2 sentences each).
-• Optimized for mobile reading.
-• No emojis unless the tone of the source material explicitly calls for them.
-• No excessive hashtags: include exactly 3–5 relevant hashtags only.
-• Place hashtags after one blank line following the final paragraph, on a single line (or natural wrap).
-• Natural keyword integration.
-• Avoid overly long sentences.
-
-SEO OPTIMIZATION REQUIREMENTS
-Ensure inclusion of:
-• industry-relevant terminology
-• role-related keywords
-• skill-based keywords
-• topic-specific search phrases
-• semantic keyword variations
-Avoid keyword stuffing.
-
-OUTPUT QUALITY CHECK (internal—before you finalize)
-• First 2 lines create curiosity or relevance.
-• Keywords align with professional search behavior.
-• Content provides genuine value.
-• Tone matches desired positioning.
-• Post encourages engagement naturally.
-• Structure matches high-performing LinkedIn content patterns.
+FORMATTING
+• No emojis unless the user's input clearly invites them.
+• One blank line, then the hashtag line on its own line(s).
+• No markdown fences, no title line like "Post:".
 
 OUTPUT
-Provide only the finished LinkedIn post (body + blank line + hashtag line). No preamble, no title, no markdown fences.`;
+Return only the finished post body, then a blank line, then the hashtag line. Nothing else.`;
 
   if (lang === "uk") {
-    return `${framework}\n\nLANGUAGE: Write the entire post in Ukrainian, including hashtags using Latin script and conventional LinkedIn style where appropriate.`;
+    return `${framework}\n\nLANGUAGE: Увесь пост українською. Сатиричний «лінкедінівський» тон і жарти з корпоративного мовлення; хештеги можна латиницею як у LinkedIn.`;
   }
   if (lang === "de") {
-    return `${framework}\n\nLANGUAGE: Write the entire post in German, including hashtags as appropriate for German LinkedIn.`;
+    return `${framework}\n\nLANGUAGE: Der gesamte Post auf Deutsch. Satirischer LinkedIn-/Hustle-Kultur-Ton; Hashtags passend zum Witz.`;
   }
   return `${framework}\n\nLANGUAGE: Write the entire post in English.`;
 }
@@ -436,17 +398,17 @@ app.post("/api/translate", async (req, res) => {
   const system = systemPrompt(lang);
   const userMsg =
     lang === "de"
-      ? `Erstelle aus folgendem Ausgangstext einen LinkedIn-Post gemäß den Systemanweisungen. Nutze den Inhalt als Themen- und Faktengrundlage; erfinde keine unbelegten Erfolge oder Details.\n\n${text}`
+      ? `Verpacke den folgenden Text in einen satirischen LinkedIn-Post (siehe Systemanweisungen). Thema und Kerninhalt erkennbar lassen; der Witz ist die übertriebene Corporate-Sprache.\n\n${text}`
       : lang === "uk"
-        ? `На основі наступного тексту згенеруй пост для LinkedIn згідно з системними інструкціями. Збережи тему й факти; не вигадуй недоведені досягнення чи деталі.\n\n${text}`
-        : `Use the following as your source. Produce a LinkedIn post per the system instructions. Keep the topic and any stated facts; do not invent unverified achievements or details.\n\n${text}`;
+        ? `Перетвори наступний текст на сатиричний LinkedIn-пост (див. системні інструкції). Тема має лишатися зрозумілою; жарт — у «лінкедінівському» пафосі.\n\n${text}`
+        : `Turn the following into a satirical LinkedIn-style post per the system instructions. Keep the topic recognizable; the joke is the over-the-top professional voice, not changing the subject into something else.\n\n${text}`;
 
   try {
     const out = await completeChat({
       system,
       user: userMsg,
       maxTokens: 1400,
-      temperature: 0.72,
+      temperature: 0.82,
     });
     return sendTranslateResult(res, req, text, lang, out);
   } catch (e) {
